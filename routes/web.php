@@ -39,10 +39,11 @@ Route::group([
 
 });
 
-Route::get('/test/{id}', function ($id){
-//    Storage::disk('backpack')->put('file.txt', 'Contents');
-$bid = Bid::find($id);
-return $bid->company;
+Route::get('/test', function (){
+    $company = auth()->user()->company;
+    $tenders = $company->tender;
+
+    dd($tenders);
 });
 
 Route::get('/test/create', function () {

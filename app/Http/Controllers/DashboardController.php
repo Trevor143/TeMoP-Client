@@ -1,7 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Tender;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -15,9 +15,11 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $tenders = Tender::all();
+        $company = auth()->user()->company;
+        $tenders = $company->tender;
+//        dd($tenders);
         $now = Carbon::now();
-        return view('admin.index', compact('tenders', 'now'));
+        return view('admin.dashboard', compact('tenders', 'now'));
     }
 
     /**

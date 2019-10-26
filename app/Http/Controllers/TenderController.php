@@ -17,7 +17,7 @@ class TenderController extends Controller
      */
     public function index()
     {
-        $tenders = Tender::all();
+        $tenders = Tender::where('closed',false)->get();
 
         $now = Carbon::now();
 

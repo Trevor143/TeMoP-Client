@@ -128,7 +128,7 @@ return [
     'menu' => [
         [
             'text'=>'Dashboard',
-            'url'=>'#',
+            'url'=>'user/home',
             'icon'=>'fas fa-tachometer-alt',
 //            'icon' => 'fas fa-fw fa-dashboard'
         ],
