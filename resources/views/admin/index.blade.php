@@ -13,6 +13,7 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#tenders" data-toggle="tab">Recent Tenders</a></li>
                     <li><a href="#bids" data-toggle="tab">Your Bids</a></li>
+                    <li><a href="#awards" data-toggle="tab">Awarded</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tenders">
@@ -78,7 +79,8 @@
                                         <th>Tender Name</th>
                                         <th>Date of Submission</th>
                                         <th>Deadline date</th>
-{{--                                        <th>Actions</th>--}}
+                                        <th>Status</th>
+                                        {{--                                        <th>Actions</th>--}}
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -92,9 +94,17 @@
                                                 bg-yellow @elseif(Carbon\Carbon::parse($bid->tender->deadline)->diffInDays($now) <= 14)
                                                 bg-red @endif ">
                                                 {{ Carbon\Carbon::parse($bid->tender->deadline)->isoFormat('dddd, D MMMM, Y')}}</td>
+                                            <td class="text-justify">
+                                                @if($bid->tender->company()->where('company_id', \Illuminate\Support\Facades\Auth::user()->company->id)->exists())
+                                                    Awarded
+                                                @elseif($bid->tender->closed = false)
+                                                    Pending
+                                                @else
+                                                    Closed
+                                                @endif</td>
                                             <td>
-{{--                                                <a href=" {{route('tender.show', $tender->id)}}"><button class="btn bg-maroon"> View Tender</button></a>--}}
-{{--                                                <a href="#"><button class="btn bg-olive">View Details</button></a>--}}
+                                                {{--                                                <a href=" {{route('tender.show', $tender->id)}}"><button class="btn bg-maroon"> View Tender</button></a>--}}
+                                                {{--                                                <a href="#"><button class="btn bg-olive">View Details</button></a>--}}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -105,7 +115,7 @@
                                         <th>Tender Name</th>
                                         <th>Date of submission</th>
                                         <th>Deadline date</th>
-{{--                                        <th>Actions</th>--}}
+                                        {{--                                        <th>Actions</th>--}}
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -113,9 +123,39 @@
                             <!-- /.box-body -->
                         </div>
                     </div>
+                    <div class="tab-pane" id="awards">
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">
+
+                                </h3>
+                            </div>
+                            <div class="box-body">
+                                <table id="tenders" class="table table-bordered table-striped display nowrap" style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th>Reference Number</th>
+                                        <th>Tender Name</th>
+                                        <th>Timelines</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($awards as $award)
+                                    <tr>
+                                        <td>{{$award->id}}</td>
+                                        <td>{{$award->name}}</td>
+                                        <td><a href="{{route('timeline', $award->id)}}"><button class="btn btn-success">Show Timelines</button></a></td>
+                                        <td></td>
+                                    </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            </div>
+        </div>
     </div>
 @stop
 

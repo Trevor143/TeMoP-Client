@@ -2,23 +2,25 @@
 
 namespace App;
 
-use App\Models\Company;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+use Backpack\CRUD\CrudTrait; // <------------------------------- this one
+
 
 class User extends Authenticatable
 {
     use Notifiable;
-    protected $table="bidders";
 
+//    protected $table="bidders";
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'company_id'
+        'name', 'email', 'password',
     ];
 
     /**
@@ -39,15 +41,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function company(){
-        return $this->belongsTo(Company::class);
-    }
-
-    public function bid(){
-        return $this->hasMany('App\Models\Bid');
-    }
-
-    public function details(){
-        return $this->hasOne('App\Models\UserDetail');
+    public function tender(){
+        return $this->hasMany('App\Models\Tender');
     }
 }

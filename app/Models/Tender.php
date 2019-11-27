@@ -20,7 +20,7 @@ class Tender extends Model
     }
 
     public function user(){
-        return $this->belongsToMany('App\Models\Organization','tender_user');
+        return $this->belongsToMany('App\Models\Organization','tender_user', 'tender_id','user_id');
     }
 
     public function organization(){
@@ -34,5 +34,7 @@ class Tender extends Model
     {
         return $this->belongsToMany('App\Models\Company', 'company_tender');
     }
+    public function tasks(){
+        return $this->hasMany('App\Task');
+    }
 }
-

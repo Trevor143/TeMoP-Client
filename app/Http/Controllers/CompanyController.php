@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
-use App\User;
+use App\Bidder;
 use Illuminate\Http\Request;
 
 class CompanyController extends Controller
@@ -39,7 +39,7 @@ class CompanyController extends Controller
 
         $company = Company::create($request->all());
 
-        $user = User::find(auth()->user()->id);
+        $user = Bidder::find(auth()->user()->id);
 
         $user->company_id = $company->id;
         $user->save();

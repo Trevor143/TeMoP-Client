@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Models\Bidder;
 use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -92,7 +92,7 @@ class UserDetailController extends Controller
             'password' => 'required|confirmed',
             'password_confirmation' => 'required'
         ]);
-        $user = User::find(Auth::id());
+        $user = Bidder::find(Auth::id());
 
         $data = $request->all();
 

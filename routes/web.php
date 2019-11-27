@@ -37,7 +37,11 @@ Route::group([
         Route::post('account/password', 'UserDetailController@password')->name('password');
         Route::get('tender/{id}/bid', 'BidController@bid')->name('bid');
 
-});
+        Route::get('tender/{tender_id}/timeline', 'GanttController@show')->name('timeline');
+        Route::get('tender/timeline/task/{task}', 'TaskController@show')->name('task_detail');
+
+
+    });
 
 Route::get('/test', function (){
     $company = auth()->user()->company;

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\User;
+use App\Bidder;
 use Illuminate\Database\Eloquent\Model;
 
 class Company extends Model
@@ -10,7 +10,7 @@ class Company extends Model
     protected $guarded =[];
 
     public function bids(){
-        return $this->hasManyThrough(Bid::class,User::class);
+        return $this->hasManyThrough(Bid::class,Bidder::class);
     }
 
     public function tender(){

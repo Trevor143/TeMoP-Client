@@ -9,6 +9,6 @@ class UserDetail extends Model
     protected $table = 'bidder_details';
 
     public function user(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\Bidder');
     }
 }
