@@ -17,15 +17,13 @@ class TenderController extends Controller
      */
     public function index()
     {
-        $tenders = Tender::where('closed',false)->where('deadline', '>=', Carbon::today())->get();
+        $tenders = Tender::where('status','PUBLISHED')->where('deadline', '>=', Carbon::today())->get();
 
         $awards = Auth::user()->company->tender;
-//        dd($awards);
 
         $now = Carbon::now();
-
         $bids = Auth::user()->bid;
-//        dd($bids);
+
         return view('admin.index', compact('tenders', 'now', 'bids', 'awards'));
     }
 

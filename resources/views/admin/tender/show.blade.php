@@ -1,9 +1,10 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Tender Details ')
 
 @section('content_header')
-    <h1>Tenders </h1><small>All Published Tenders</small>
+    <h1>Tender Name : <strong>{{$tender->name}}</strong> </h1>
+{{--    <small>All Published Tenders</small>--}}
 @stop
 
 @section('content')
@@ -69,6 +70,16 @@
                             @if($tender->deadline->greaterThan(now()))
                                 <a href="{{route('bid.edit', $bid->id)}}"><button class="btn btn-success">Edit Bid</button></a>
                             @endif
+                        </div>
+                        <br>
+                        <div class="mb-5">
+                            <form action="{{route('bid.destroy', $bid->id)}}" method="POST"
+                                  onsubmit="return confirm('Do you really want to delete your bid? This action cannot be undone!');">
+                                {{method_field('DELETE')}}
+                                @csrf
+                                {{--                                <a href="{{route('bid.destroy', $bid->id)}}" class="btn btn-danger">Delete Your bid</a>--}}
+                                <input type="submit" class="btn btn-danger" value="Delete Your Bid">
+                            </form>
                         </div>
                     @endif
                 </div>

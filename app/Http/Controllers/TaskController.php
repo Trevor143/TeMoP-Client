@@ -57,25 +57,38 @@ class TaskController extends Controller
         ]);
     }
 
+    public function complete($task)
+    {
+        $task = Task::find($task);
+
+        $task->complete = true;
+
+        $task->save();
+
+        toastSuccess('Task has been marked as complete. Pending confirmation' );
+
+        return redirect()->route('task.show', $task->id);
+    }
+
+    public function uncomplete($task)
+    {
+        $task = Task::find($task);
+
+        $task->complete = false;
+
+        $task->save();
+
+        toastSuccess('Task has been marked as incomplete.' );
+
+        return redirect()->route('task.show', $task->id);
+    }
+
     /**
      * Display the specified resource.
      *
      * @param  \App\Task  $task
      * @return \Illuminate\Http\Response
      */
-//    public function show($id)
-//    {
-//        $tender = Tender::find($id);
-//        $people = BackpackUser::all('id','name')->map(function ($items){
-//            $data['id'] = $items->id;
-//            $data['text'] = $items->name;
-//            return $data;
-//        });
-////        $tasks = $tender->tasks;
-////        dd($tender);
-//        return view('vendor.backpack.timelines.gantt', compact('tender', 'people'));
-//    }
-
     public function show($id)
     {
         $task = Task::find($id);

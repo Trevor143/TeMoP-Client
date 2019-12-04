@@ -16,7 +16,7 @@
             <p class="login-box-msg">Register Your Company</p>
             <p class="error-content"><small>Make sure you do not register a company twice</small></p>
 {{--            <p> {{session('errors')->first('message')}} </p>--}}
-            <form action="#" method="post">
+            <form action="{{route('company.store')}}" method="post">
                 @csrf
                 <div class="form-group has-feedback {{ $errors->has('name') ? 'has-error' : '' }}">
                     <input type="text" name="name" class="form-control" value="{{ old('name') }}"

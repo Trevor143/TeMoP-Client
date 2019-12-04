@@ -17,7 +17,7 @@ class Bid extends Model
     }
 
     public function user(){
-        return $this->belongsTo('App\Models\Bidder', 'user_id', 'tender_id');
+        return $this->belongsTo('App\Models\Bidder', 'user_id');
     }
 
     public function files(){

@@ -19,7 +19,7 @@
                             <div class="box-header with-border">
                                 <h3 class="box-title">Place your bid <small>Ensure all details required are filled</small></h3>
                             </div>
-                            <form role="form" action="{{route('bid.update', $bidd->id)}}" method="post" id="placeBidForm">
+                            <form role="form" action="{{route('bid.update', $bidd->id)}}" method="post" id="placeBidForm" enctype="multipart/form-data">
                                 @csrf
                                 @method('patch')
                                 <div class="box-body">
@@ -44,8 +44,8 @@
                                                         <input type="text" value="{{ preg_replace('/^bids/','',$file->fileurl)}}" class="form-control" disabled>
                                                         <input type="hidden" name="oldfile{{$key}}" value="{{$file->fileurl}}">
                                                     </td>
-                                                    <td><input multiple type="file" id="req_file" name="fileurl{{$key}}"  class="form-control">
-                                                        @if ($errors->any())
+                                                    <td>
+                                                        <input multiple type="file" id="req_file" name="file{{$key}}" class="form-control">                                                        @if ($errors->any())
                                                             <div class="alert alert-danger">
                                                                 @foreach ($errors->all() as $error)
                                                                     {{ $error }}

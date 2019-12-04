@@ -100,17 +100,24 @@
 @stop
 
 @section('content_header')
-    <h1>Tenders </h1><small>All Published Tenders</small>
+    <h1>Timeline for <strong>{{$tender->name}}</strong> </h1>
+    <br>
+
+    <a href="{{url('/user/tender#awards')}}"><button class="btn btn-success">Back to Awarded Tenders</button></a>
 @stop
 
 @section('content')
-{{--@section('gantt_scripts')--}}
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="{{asset('gantt_files/samples/11_resources/common/jquery_multiselect.js')}}"></script>
-    {{--    <script src="{{asset('gantt')}}"></script>--}}
     <script src="{{asset('gantt_files/codebase/dhtmlxgantt.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.js"></script>
-{{--@stop--}}
+    <script src="http://export.dhtmlx.com/gantt/api.js"></script>
+
+
+    @if($tender->closed === 1)
+        <input value="Export to PDF" type="button" onclick='gantt.exportToPDF()'>
+        <input value="Export to PNG" type="button" onclick='gantt.exportToPNG()'>
+    @endif
 
 <form class="gantt_control">
     <input type="button" value="Zoom In" onclick="zoomIn()">
@@ -230,67 +237,8 @@
     gantt.config.columns = [
         {name: "text", tree: true, width: 200, resize: true},
         {name: "start_date", align: "center", width: 80, resize: true},
-        {name: "owner", align: "center", width: 75, label: "Owner", template: function (task) {
-                if (task.type === gantt.config.types.project) {
-                    return "";
-                }
-
-                var result = "";
-                var store = gantt.getDatastore("resource");
-                var owners = task[gantt.config.resource_property];
-
-                if (!owners || !owners.length) {
-                    return "Unassigned";
-                }
-
-                if(owners.length === 1){
-                    return store.getItem(owners[0].text);
-                }
-
-                owners.forEach(function(ownerId) {
-                    var owner = store.getItem(ownerId);
-                    if (!owner)
-                        return;
-                    result += "<div class='owner-label' title='" + owner.text + "'>" + owner.text.substr(0, 1) + "</div>";
-
-                });
-
-                return result;
-            }, resize: true
-        },
         {name: "duration", width: 60, align: "center"},
-        {name: "add", width: 44}
     ];
-
-    var resourceConfig = {
-        columns: [
-            {
-                name: "name", label: "Name", tree:true, template: function (resource) {
-                    return resource.text;
-                }
-            },
-            {
-                name: "workload", label: "Workload", template: function (resource) {
-                    var tasks;
-                    var store = gantt.getDatastore(gantt.config.resource_store),
-                        field = gantt.config.resource_property;
-
-                    if(store.hasChild(resource.id)){
-                        tasks = gantt.getTaskBy(field, store.getChildren(resource.id));
-                    }else{
-                        tasks = gantt.getTaskBy(field, resource.id);
-                    }
-
-                    var totalDuration = 0;
-                    for (var i = 0; i < tasks.length; i++) {
-                        totalDuration += tasks[i].duration;
-                    }
-
-                    return (totalDuration || 0) * 8 + "h";
-                }
-            }
-        ]
-    };
 
     gantt.templates.resource_cell_class = function(start_date, end_date, resource, tasks){
         var css = [];
@@ -312,7 +260,6 @@
     gantt.locale.labels["type_meeting"] = "Meeting";
 
     var tender = "{{$tender->id}}";
-
 
     gantt.locale.labels.section_owner = "Owner";
     gantt.locale.labels.time_enable_button = 'Schedule';
@@ -342,15 +289,14 @@
         {name: "tender", height:1, map_to: "tender_id", type: "radio", options: [{key:tender, label: "{{$tender->name}}"}], default_value: tender },
     ];
 
-    {{--            if({{$tender}})--}}
-
     gantt.attachEvent("onBeforeLightbox", function (id) {
         var task = gantt.getTask(id);
 
         task.my_template = "<a href='/user/tender/timeline/task/"+ task.id+"' class='btn btn-primary'> Task Details </a>\n";
 
-        // gantt.config.buttons_left = ["gantt_cancel_btn"];
-        // gantt.config.buttons_right = [];
+        gantt.config.buttons_left = ["gantt_cancel_btn"];
+
+        gantt.config.buttons_right = [];
 
         // task.my_template = "<span id='title1'>Holders: </span>" + task.users + "<span id='title2'>Progress: </span>" + task.progress * 100 + " %";
         return true;
@@ -375,10 +321,14 @@
         return "";
     };
 
+    gantt.config.drag_resize = false;
+    gantt.config.drag_links = false;
+    gantt.config.drag_move = false;
+    gantt.config.drag_progress = false;
     gantt.config.date_format = "%Y-%m-%d %H:%i:%s";
     gantt.config.resource_store = "resource";
     gantt.config.resource_property = "owner_id";
-    gantt.config.order_branch = true;
+    gantt.config.order_branch = false;
     gantt.config.open_tree_initially = true;
     gantt.config.layout = {
         css: "gantt_container",
@@ -393,16 +343,6 @@
                 gravity:2
             },
             {resizer: true, width: 1},
-            {
-                config: resourceConfig,
-                cols: [
-                    {view: "resourceGrid", group:"grids", width: 435, scrollY: "resourceVScroll" },
-                    {resizer: true, width: 1},
-                    {view: "resourceTimeline", scrollX: "scrollHor", scrollY: "resourceVScroll"},
-                    {view: "scrollbar", id: "resourceVScroll", group:"vertical"}
-                ],
-                gravity:1
-            },
             {view: "scrollbar", id: "scrollHor"}
         ]
     };

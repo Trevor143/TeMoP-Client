@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bidder;
 use App\Models\Company;
-use App\Bidder;
 use Illuminate\Http\Request;
 
 class CompanyController extends Controller
@@ -25,6 +25,7 @@ class CompanyController extends Controller
      */
     public function create()
     {
+        return view('auth.company');
     }
 
     /**
@@ -66,19 +67,32 @@ class CompanyController extends Controller
      */
     public function edit(Company $company)
     {
-        //
+
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Company  $company
+     * @param   $company
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Company $company)
+    public function update(Request $request, $company)
     {
-        //
+        $update = Company::find($company);
+
+        $update->name = $request->name;
+        $update->yearFounded = $request->yearFounded;
+        $update->type = $request->type;
+        $update->mobile = $request->mobile;
+        $update->email = $request->email;
+
+        $update->save();
+
+        toastSuccess('Company details successfulty updated');
+
+        return redirect()->route('account.index');
+
     }
 
     /**

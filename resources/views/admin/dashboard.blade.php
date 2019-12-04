@@ -15,7 +15,7 @@
                 {{$tender->name}}
             </div>
             <div class="box-body">
-                <button class="btn btn-success">Show Timelines</button>
+                <a href="{{route('timeline', $tender->id)}}"><button class="btn btn-success">Show Timelines</button></a>
             </div>
         </div>
             @endforeach

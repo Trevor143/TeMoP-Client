@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Tenders')
 
 @section('content_header')
     <h1>Tenders </h1><small>All Published Tenders</small>
@@ -46,7 +46,6 @@
                                                 {{ Carbon\Carbon::parse($tender->deadline)->isoFormat('dddd, D MMMM, Y')}}</td>
                                             <td>
                                                 <a href=" {{route('tender.show', $tender->id)}}"><button class="btn bg-maroon"> View Tender</button></a>
-                                                <a href="#"><button class="btn bg-olive">View Details</button></a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -80,7 +79,6 @@
                                         <th>Date of Submission</th>
                                         <th>Deadline date</th>
                                         <th>Status</th>
-                                        {{--                                        <th>Actions</th>--}}
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -94,18 +92,7 @@
                                                 bg-yellow @elseif(Carbon\Carbon::parse($bid->tender->deadline)->diffInDays($now) <= 14)
                                                 bg-red @endif ">
                                                 {{ Carbon\Carbon::parse($bid->tender->deadline)->isoFormat('dddd, D MMMM, Y')}}</td>
-                                            <td class="text-justify">
-                                                @if($bid->tender->company()->where('company_id', \Illuminate\Support\Facades\Auth::user()->company->id)->exists())
-                                                    Awarded
-                                                @elseif($bid->tender->closed = false)
-                                                    Pending
-                                                @else
-                                                    Closed
-                                                @endif</td>
-                                            <td>
-                                                {{--                                                <a href=" {{route('tender.show', $tender->id)}}"><button class="btn bg-maroon"> View Tender</button></a>--}}
-                                                {{--                                                <a href="#"><button class="btn bg-olive">View Details</button></a>--}}
-                                            </td>
+                                            <td>{{$bid->tender->status}}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -115,7 +102,7 @@
                                         <th>Tender Name</th>
                                         <th>Date of submission</th>
                                         <th>Deadline date</th>
-                                        {{--                                        <th>Actions</th>--}}
+                                        <th>Status</th>
                                     </tr>
                                     </tfoot>
                                 </table>
@@ -160,18 +147,10 @@
 @stop
 
 @section('css')
-
+    @toastr_css
 @stop
 
 @section('js')
-    <script>
-        $(document).ready(function() {
-            $('#tenders').DataTable( {
-                "scrollX": true,
-                buttons: [
-                    'copy', 'excel', 'pdf'
-                ]
-            } );
-        } );
-    </script>
+    @toastr_js
+    @toastr_render
 @stop

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bidder;
+use App\Models\Company;
 use App\Models\UserDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,11 @@ class UserDetailController extends Controller
      */
     public function index()
     {
-        return view('auth.account');
+        $company = Auth::user()->company;
+        $users = $company->user->except(Auth::user()->id);
+//        dd($users);
+//        dd($company);
+        return view('auth.account', compact('company', 'users'));
     }
 
     /**
@@ -38,7 +43,12 @@ class UserDetailController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $user = new Bidder();
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+//        $user->password = bcrypt()
     }
 
     /**

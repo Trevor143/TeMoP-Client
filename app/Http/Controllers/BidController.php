@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\BidNotificationMail;
+use App\Mail\BidUpdateNotificationMail;
 use App\Models\Bid;
 use App\Models\File;
 use App\Http\Requests\FileUploadRequest;
 use App\Models\Tender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File as StoreFile;
 use Illuminate\Http\UploadedFile as UploadFile;
@@ -38,7 +41,7 @@ class BidController extends Controller
      */
     public function create()
     {
-//        return view('')
+        return view('admin.tender.bid.create');
     }
 
     /**
@@ -50,12 +53,11 @@ class BidController extends Controller
      */
     public function store(Request $request)
     {
-
-//        dd($request->all());
         $bid = Bid::create($request->except('filename', 'file'));
         $files = $request->input('filename');
 
         foreach ($files as $key => $value){
+//            dd($request->only('file'.$key));
 
             $validator = Validator::make($request->only('file' . $key), [
                 'file' . $key => 'required|file'
@@ -66,11 +68,14 @@ class BidController extends Controller
                     ->withErrors($validator)
                     ->withInput();
             }
-            $path = $request->file('file'.$key)->storeAs('bids' , $request->file('file'.$key)->getClientOriginalName());
+            $path = $request->file('file'.$key)->storeAs('storage/bids' , $request->file('file'.$key)->getClientOriginalName());
 //            dd($path);
             $bid->files()->create(['filename'=> $value,
-                                        'fileurl' => $path]);
+                'fileurl' => $path]);
         }
+        toastr()->success('Your bid has been submitted!', 'Bid Creation');
+        Mail::to([$bid->user->email,$bid->user->company->first()->email])->send(new BidNotificationMail($bid));
+
         return redirect('user/tender');
     }
 
@@ -96,7 +101,7 @@ class BidController extends Controller
         $bidd = Bid::find($id);
 
         $tender = Tender::findOrFail($bidd->tender_id);
-        dd($bidd->files);
+//        dd($bidd->files);
 
         return view('admin.tender.bid.edit', compact('bidd', 'tender'));
     }
@@ -108,15 +113,14 @@ class BidController extends Controller
      * @param  \App\Bid  $bid
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Bid $bid)
+    public function update(Request $request,$bid)
     {
+        $bid = Bid::find($bid);
         $files = $request->input('filename');
 
-//        dd($files);
         foreach ($files as $key => $value){
-
-            $validator = Validator::make($request->only('fileurl' . $key), [
-                'fileurl'.$key => 'required|file'
+            $validator = Validator::make($request->only('file' . $key), [
+                'file' . $key => 'required|file'
             ]);
 
             if ($validator->fails()) {
@@ -125,22 +129,32 @@ class BidController extends Controller
                     ->withInput();
             }
             Storage::delete($request->file('oldfile'.$key));
-            $path = $request->file('fileurl'.$key)->storeAs('bids' , $request->file('fileurl'.$key)->getClientOriginalName());
+            $path = $request->file('file'.$key)->storeAs('storage/bids' , $request->file('file'.$key)->getClientOriginalName());
 //            dd($path);
             $bid->files()->update(['filename'=> $value,
                 'fileurl' => $path]);
         }
+        Mail::to([$bid->user->email,$bid->user->company->first()->email])->send(new BidUpdateNotificationMail($bid));
+
+        toastr()->success('Your bid has been edited successfully!', 'Bid Update');
+
         return redirect('user/tender');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Bid  $bid
+     * @param \App\Models\Bid $bid
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
-    public function destroy(Bid $bid)
+    public function destroy($bid)
     {
-        //
+        $bid = Bid::find($bid);
+
+        $bid->delete();
+        toastr()->warning('Your bid was deleted!', 'Bid Deleted');
+
+        return  redirect('user/tender');
     }
 }

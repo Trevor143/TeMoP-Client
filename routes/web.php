@@ -39,6 +39,8 @@ Route::group([
 
         Route::get('tender/{tender_id}/timeline', 'GanttController@show')->name('timeline');
         Route::get('tender/timeline/task/{task}', 'TaskController@show')->name('task_detail');
+        Route::get('tender/timeline/task/{task}/complete', 'TaskController@complete')->name('complete');
+        Route::get('tender/timeline/task/{task}/uncomplete', 'TaskController@uncomplete')->name('uncomplete');
 
 
     });
