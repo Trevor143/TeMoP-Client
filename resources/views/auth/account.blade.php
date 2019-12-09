@@ -23,7 +23,7 @@
 
                 @if(\Illuminate\Support\Facades\Auth::user()->admin == 1)
                     <li ><a href="#details" data-toggle="tab">Company</a></li>
-                    <li><a href="#users" data-toggle="tab">Users</a></li>
+{{--                    <li><a href="#users" data-toggle="tab">Users</a></li>--}}
                     @endif
                 </ul>
                 <div class="tab-content">

@@ -43,8 +43,12 @@ class BidsReceivedCommand extends Command
     public function handle()
     {
         $tenders = Tender::all();
+//        dd(Carbon::yesterday());
         foreach ($tenders as $tender) {
-            if ($tender->deadline = Carbon::yesterday() ){
+            $deadline = $tender->deadline->isoFormat('Y-m-d');
+            $yesterday = Carbon::yesterday()->isoFormat('Y-m-d');
+            if ($deadline === $yesterday){
+//                dump($tender->deadline);
                 $bids = Bid::where('tender_id',$tender->id)->get();
                 foreach ($bids as $bid) {
 //                    dd($bid->user);

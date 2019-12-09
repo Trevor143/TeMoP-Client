@@ -41,6 +41,7 @@ class CompanyController extends Controller
         $company = Company::create($request->all());
 
         $user = Bidder::find(auth()->user()->id);
+        $user->admin = 1;
 
         $user->company_id = $company->id;
         $user->save();

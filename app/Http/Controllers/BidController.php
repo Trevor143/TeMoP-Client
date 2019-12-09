@@ -68,7 +68,8 @@ class BidController extends Controller
                     ->withErrors($validator)
                     ->withInput();
             }
-            $path = $request->file('file'.$key)->storeAs('storage/bids' , $request->file('file'.$key)->getClientOriginalName());
+            $path = $request->file('file'.$key)->storeAs('storage/bids' , Auth::user()->company->first()->name.'-'.$value);
+//            $request->file('file'.$key)->getClientOriginalName()
 //            dd($path);
             $bid->files()->create(['filename'=> $value,
                 'fileurl' => $path]);
@@ -129,7 +130,8 @@ class BidController extends Controller
                     ->withInput();
             }
             Storage::delete($request->file('oldfile'.$key));
-            $path = $request->file('file'.$key)->storeAs('storage/bids' , $request->file('file'.$key)->getClientOriginalName());
+            $path = $request->file('file'.$key)->storeAs('storage/bids' , Auth::user()->company->first()->name.'-'.$value);
+//            $request->file('file'.$key)->getClientOriginalName()
 //            dd($path);
             $bid->files()->update(['filename'=> $value,
                 'fileurl' => $path]);
